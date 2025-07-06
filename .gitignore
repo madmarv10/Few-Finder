@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+.env
+
+# ChromaDB data folder (optional, if you don't want to commit DB files)
+data/chroma/
+
+# Node.js / frontend
+node_modules/
+dist/
+build/
+
+# Logs
+logs/
+*.log
+
+# VSCode
+.vscode/
+
+# MacOS
+.DS_Store
+
+# Python virtual environment folder (if named differently)
+.env/
+
+# Python bytecode
+*.pyc
+
+# Temporary files
+*.tmp
+*.swp
