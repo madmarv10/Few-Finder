@@ -7,6 +7,7 @@ app = FastAPI(title="Fewfinder API")
 
 # Allow React frontend (adjust origins as needed)
 origins = [
+    "https://your-frontend-domain.com",  # TODO: Replace with your production frontend URL
     "http://localhost:3000",  # React dev server default port
     "http://localhost:5173",  # Vite dev server default port
 ]
