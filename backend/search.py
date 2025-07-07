@@ -1,8 +1,8 @@
 # backend/search.py
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from backend.vector_store import search_transcripts
-from backend.youtube import get_video_url_at_time
+from vector_store import search_transcripts
+from youtube import get_video_url_at_time
 
 router = APIRouter()
 

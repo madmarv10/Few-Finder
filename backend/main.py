@@ -1,7 +1,7 @@
 # backend/main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.search import router as search_router
+from search import router as search_router
 
 app = FastAPI(title="Fewfinder API")
 

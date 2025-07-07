@@ -1,34 +1,72 @@
 // frontend/src/components/ResultCard.js
-import React from "react";
+import React, { useState } from "react";
 
-export default function ResultCard({ videoId, title, snippet, start }) {
-  const videoUrl = `https://www.youtube.com/watch?v=${videoId}&t=${Math.floor(start)}s`;
+export default function ResultCard({ videoId, title, snippet, start, videoUrl }) {
+  const [imageError, setImageError] = useState(false);
   const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+
+  const formatTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    
+    if (hours > 0) {
+      return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+    return `${minutes}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const handleCardClick = () => {
+    if (videoUrl) {
+      window.open(videoUrl, "_blank", "noopener,noreferrer");
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleCardClick();
+    }
+  };
 
   return (
     <div
-      style={{
-        border: "1px solid #ddd",
-        borderRadius: "8px",
-        padding: "1rem",
-        marginBottom: "1rem",
-        display: "flex",
-        cursor: "pointer",
-        maxWidth: "600px",
-      }}
-      onClick={() => window.open(videoUrl, "_blank")}
+      className="result-card"
+      onClick={handleCardClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="button"
+      aria-label={`Watch video starting at ${formatTime(start)}`}
     >
-      <img
-        src={thumbnailUrl}
-        alt={title}
-        style={{ width: "120px", height: "90px", borderRadius: "4px", marginRight: "1rem" }}
-      />
-      <div>
-        <h3 style={{ margin: "0 0 0.5rem 0" }}>{title}</h3>
-        <p style={{ margin: 0, color: "#555" }}>{snippet}</p>
-        <small style={{ color: "#999" }}>
-          Starts at {new Date(start * 1000).toISOString().substr(11, 8)}
-        </small>
+      <div className="result-thumbnail">
+        {!imageError ? (
+          <img
+            src={thumbnailUrl}
+            alt={`Thumbnail for ${title}`}
+            onError={() => setImageError(true)}
+            className="thumbnail-image"
+          />
+        ) : (
+          <div className="thumbnail-placeholder">
+            <span>📺</span>
+          </div>
+        )}
+        <div className="timestamp-overlay">
+          {formatTime(start)}
+        </div>
+      </div>
+      
+      <div className="result-content">
+        <h3 className="result-title">{title}</h3>
+        <p className="result-snippet">{snippet}</p>
+        <div className="result-meta">
+          <span className="result-time">
+            Starts at {formatTime(start)}
+          </span>
+          <span className="result-action">
+            Click to watch →
+          </span>
+        </div>
       </div>
     </div>
   );

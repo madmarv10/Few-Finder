@@ -1,10 +1,13 @@
 # backend/vector_store.py
 import chromadb
-from chromadb.config import Settings
-from backend.embedding import get_embedding
+from embedding import get_embedding
+import os
 
-# Initialize Chroma client and collection
-client = chromadb.Client(Settings(chroma_db_impl="duckdb+parquet", persist_directory="data/chroma"))
+# Create data directory if it doesn't exist
+os.makedirs("data", exist_ok=True)
+
+# Initialize Chroma client with new syntax
+client = chromadb.PersistentClient(path="data/chroma")
 collection_name = "fewfinder_subtitles"
 
 # Create or get the collection
@@ -34,7 +37,6 @@ def add_subtitle_chunks(chunks):
         metadatas=metadatas,
         ids=ids,
     )
-    client.persist()
 
 def search_transcripts(query, n_results=1):
     """
