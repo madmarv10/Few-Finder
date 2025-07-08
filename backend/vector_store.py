@@ -2,6 +2,8 @@
 import chromadb
 from backend.embedding import get_embedding
 import os
+from backend.utils import clean_text, chunk_text
+import numpy as np
 
 # Create data directory if it doesn't exist
 os.makedirs("data", exist_ok=True)
@@ -60,3 +62,36 @@ def search_transcripts(query, n_results=1):
     # Extract metadata of the top result
     top_meta = results['metadatas'][0][0]
     return top_meta
+
+def search_transcript_chunks(query, transcript, max_chunk_length=200):
+    """
+    Given a transcript (list of dicts with 'text' and 'start'), chunk it, embed the chunks, and return the best match to the query.
+    Returns a dict with 'text', 'start', and 'score'.
+    """
+    # Combine all text
+    full_text = " ".join([seg["text"] for seg in transcript])
+    chunks = chunk_text(full_text, max_length=max_chunk_length)
+    if not chunks:
+        return None
+    # Get start times for each chunk (approximate by mapping to first segment in chunk)
+    starts = []
+    seg_idx = 0
+    for chunk in chunks:
+        # Find the first segment whose text appears in the chunk
+        while seg_idx < len(transcript) and transcript[seg_idx]["text"] not in chunk:
+            seg_idx += 1
+        if seg_idx < len(transcript):
+            starts.append(transcript[seg_idx]["start"])
+        else:
+            starts.append(0.0)
+    # Embed query and chunks
+    query_emb = get_embedding(query)
+    chunk_embs = [get_embedding(chunk) for chunk in chunks]
+    # Compute cosine similarity
+    scores = [float(np.dot(query_emb, emb) / (np.linalg.norm(query_emb) * np.linalg.norm(emb))) for emb in chunk_embs]
+    best_idx = int(np.argmax(scores))
+    return {
+        "text": chunks[best_idx],
+        "start": starts[best_idx],
+        "score": scores[best_idx]
+    }

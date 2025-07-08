@@ -1,5 +1,7 @@
 # backend/config.py
 
+import os
+
 # Paths
 TRANSCRIPTS_DIR = "data/transcripts"
 CHROMA_DB_DIR = "data/chroma"
@@ -8,7 +10,7 @@ CHROMA_DB_DIR = "data/chroma"
 EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
 
 # YouTube API key (if used)
-YOUTUBE_API_KEY = ""  # Add your API key here or load from environment variables
+YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY", "")  # Load from environment variables
 
 # Frontend URLs allowed for CORS (adjust as needed)
 FRONTEND_ORIGINS = [
