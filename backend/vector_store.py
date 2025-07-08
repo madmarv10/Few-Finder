@@ -1,6 +1,6 @@
 # backend/vector_store.py
 import chromadb
-from embedding import get_embedding
+from backend.embedding import get_embedding
 import os
 
 # Create data directory if it doesn't exist
