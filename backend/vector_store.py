@@ -8,15 +8,19 @@ import numpy as np
 # Create data directory if it doesn't exist
 os.makedirs("data", exist_ok=True)
 
-# Initialize Chroma client with new syntax
-client = chromadb.PersistentClient(path="data/chroma")
 collection_name = "fewfinder_subtitles"
 
-# Create or get the collection
-try:
-    collection = client.get_collection(name=collection_name)
-except Exception:
-    collection = client.create_collection(name=collection_name)
+def get_chroma_client():
+    """Get or create ChromaDB client and collection."""
+    chroma_client = chromadb.Client()
+    try:
+        collection = chroma_client.get_collection(name=collection_name)
+    except Exception:
+        collection = chroma_client.create_collection(name=collection_name)
+    return collection
+
+# Initialize collection
+collection = get_chroma_client()
 
 def add_subtitle_chunks(chunks):
     """

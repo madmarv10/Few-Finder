@@ -42,16 +42,29 @@ class DynamicSearchResponse(BaseModel):
 
 @router.post("/search", response_model=SearchResponse)
 async def search(request: SearchRequest):
-    result = search_transcripts(request.question)
-    if not result:
-        raise HTTPException(status_code=404, detail="No relevant match found.")
-    
-    video_url = get_video_url_at_time(result["video_id"], result["start"])
-    return SearchResponse(
-        video_url=video_url,
-        transcript_text=result["text"],
-        start_time=result["start"]
-    )
+    try:
+        result = search_transcripts(request.question)
+        if not result:
+            # Return a default response instead of 404 for now
+            return SearchResponse(
+                video_url="https://example.com/no-match",
+                transcript_text="No relevant match found in the database.",
+                start_time=0.0
+            )
+        
+        video_url = get_video_url_at_time(result["video_id"], result["start"])
+        return SearchResponse(
+            video_url=video_url,
+            transcript_text=result["text"],
+            start_time=result["start"]
+        )
+    except Exception as e:
+        # Return a default response on any error
+        return SearchResponse(
+            video_url="https://example.com/error",
+            transcript_text=f"Error processing request: {str(e)}",
+            start_time=0.0
+        )
 
 @router.post("/youtube_search", response_model=List[YouTubeVideoResult])
 async def youtube_search(request: YouTubeSearchRequest):
