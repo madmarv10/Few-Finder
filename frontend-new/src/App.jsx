@@ -1,7 +1,8 @@
+import React from 'react';
 import { useState } from 'react';
 import './App.css';
-import SearchBar from './components/SearchBar';
-import ResultCard from './components/ResultCard';
+import SearchBar from './components/SearchBar.jsx';
+import ResultCard from './components/ResultCard.jsx';
 
 function App() {
   const [question, setQuestion] = useState('');
