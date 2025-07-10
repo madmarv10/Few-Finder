@@ -11,7 +11,6 @@ WORKDIR /app
 # Install dependencies
 COPY backend/requirements.txt .
 RUN pip install --upgrade pip wheel
-RUN pip install --only-binary=:all: PyYAML==5.4.1
 RUN pip install -r requirements.txt
 
 # Copy project files
