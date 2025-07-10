@@ -8,10 +8,20 @@ ENV PYTHONUNBUFFERED=1
 # Set work directory
 WORKDIR /app
 
+# Install system dependencies needed for building packages
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gcc \
+    libyaml-dev \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install dependencies
 COPY backend/requirements.txt .
-RUN pip install --upgrade pip wheel
-RUN pip install -r requirements.txt
+RUN pip install --upgrade pip wheel setuptools
+
+# Install all requirements
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project files
 COPY backend /app/backend
